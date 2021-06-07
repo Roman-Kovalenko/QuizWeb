@@ -1,0 +1,68 @@
+{% extends "my_quiz_app/base.html" %}
+
+{% block title %}Тестирование{% endblock %}
+
+{% block content %}
+<main class="flex-shrink-0">
+    <div class="container mt-5">
+        <div id="questions"></div>
+
+        <div class="row mt-4">
+            <button onclick="change_count(this)" id="previous_btn" class="btn btn-primary mx-1" style="width: 120px">Предыдущий вопрос</button>
+            <button onclick="change_count(this)" id="next_btn" class="btn btn-primary mx-1" style="width: 120px">Следующий вопрос</button>
+        </div>
+
+        <div class="row mt-2">
+            <button onclick="send_user_answer(user_answers_dict, all_Question[count].pk)" class="btn btn-success mx-1" style="width: 248px">Завершить тест</button>
+        </div>
+    </div>
+  </main>
+{% endblock %}
+
+{% block footer %}
+{% load static %}
+<!-- <script src="https://yastatic.net/jquery/3.3.1/jquery.min.js"></script> -->
+<script src="{% static 'my_quiz_app/js/jquery-3.3.1.js' %}"></script>
+
+<script src="{% static 'my_quiz_app/js/questions.js' %}"></script>
+
+<script>
+    "use strict";
+    
+    let all_Quiz = JSON.parse('{{ all_Quiz | safe }}');
+    let all_Question = JSON.parse('{{ all_Question | safe }}');
+    let all_Choice = JSON.parse('{{ all_Choice | safe }}');
+    let previous_button = document.getElementById("previous_btn");
+    let next_button = document.getElementById("next_btn");
+    let count = 0;
+
+    // Функция отображает список вопросов
+    function send_user_answer(user_answers_dict, quesion_pk){
+    let current_checkboxes = document.getElementsByClassName('checkbox');
+    save_user_check(current_checkboxes, user_answers_dict, quesion_pk)
+
+    $.ajax({
+        url:"/user_rating/",
+        type: "POST",
+        data: JSON.stringify(user_answers_dict),
+        
+        headers: {'X-CSRFToken': '{{ csrf_token }}' },
+        
+        success:function(response){
+            window.location.href = '/user_rating/'
+        },
+        complete:function(){},
+        error:function (xhr, textStatus, thrownError){}
+    });
+}
+    
+    // Инициализация исходного списка и кнопок
+    document.getElementById("questions").innerHTML = make_answer_list(all_Question, all_Choice, 0);
+    previous_button.disabled = true;
+    let user_answers_dict = {};
+    for (let i=0; i<all_Question.length; i++){
+        user_answers_dict[all_Question[i].pk] = {'text':undefined, 'user_choices':[]};
+        user_answers_dict[all_Question[i].pk]['text'] = all_Question[i].fields.text;
+    }
+</script>
+{% endblock %}

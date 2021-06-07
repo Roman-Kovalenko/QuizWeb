@@ -1,0 +1,12 @@
+{% extends "my_quiz_app/base.html" %}
+
+{% block title %}Результаты тестирования{% endblock %}
+
+{% block content %}
+<main class="flex-shrink-0">
+    <div class="container mt-5">
+      <h1>Тестирование завершено</h1>
+      <p class="lead">Ваш результат {{data}} %</p>
+    </div>
+  </main>
+{% endblock %}
