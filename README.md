@@ -1,5 +1,4 @@
 # Приложение Quiz
-# https://www.youtube.com/watch?v=ofTtP9Utz2Q&ab_channel=Dima
 [Ссылка на общее описание тестовое задания](https://yadi.sk/i/F4eBBIin1a4AZA)
 
 ## Почта для вопросов и результатов выполнения тестового
